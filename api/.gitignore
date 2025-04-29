@@ -1,2 +1,6 @@
 # binary
 nyla-api
+
+# sqlite
+nyla.db
+data/

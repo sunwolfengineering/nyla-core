@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"strconv"
 	"time"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/mileusna/useragent"
+	_ "modernc.org/sqlite"
 )
 
 type Event struct {
@@ -27,21 +28,19 @@ type Event struct {
 }
 
 type Events struct {
-	DB *pgx.Conn
+	DB *sql.DB
 }
 
 func (e *Events) Open() error {
-	conn, err := pgx.Connect(
-		context.Background(),
-		"postgres://postgres:password@localhost:5432/postgres",
-	)
+	db, err := sql.Open("sqlite", "nyla.db")
 	if err != nil {
 		return err
-	} else if err := conn.Ping(context.Background()); err != nil {
+	}
+	if err := db.Ping(); err != nil {
 		return err
 	}
 
-	e.DB = conn
+	e.DB = db
 	return nil
 }
 
@@ -62,11 +61,11 @@ func (e *Events) Add(payload CollectorPayload, hash string, ua useragent.UserAge
 		country, 
 		region
 	) VALUES (
-		$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	)
 	`
 
-	_, err := e.DB.Exec(
+	_, err := e.DB.ExecContext(
 		context.Background(),
 		q,
 		hash,

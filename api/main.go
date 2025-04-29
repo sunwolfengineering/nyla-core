@@ -102,7 +102,7 @@ func collect(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error getting geo info:", err)
 	}
 
-	hash, err := generatePrivateIDHash(ip.String(), trk.Data.UserAgent, trk.Data.Hostname, trk.SiteID)
+	hash, err := generatePrivateIDHash(ip.String(), payload.Data.UserAgent, payload.Data.Hostname, payload.SiteID)
 	if err != nil {
 		fmt.Println("error generating private ID hash:", err)
 	}
