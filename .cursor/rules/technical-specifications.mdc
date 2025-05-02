@@ -1,0 +1,100 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Technical Specifications Reference Guide
+
+All development work in the Nyla project must adhere to the established technical specifications. These specifications serve as the source of truth for implementation details, architectural decisions, and system behavior.
+
+## Specification Coverage Assessment
+
+Before implementing any feature or modification:
+
+1. **Coverage Check**
+   - Verify if the requested work is covered by existing specifications
+   - Identify any aspects that fall outside current specification scope
+   - Flag any potential architectural or design impacts
+
+2. **Unspecified Work Protocol**
+   - If work falls outside existing specifications:
+     - Highlight the specific areas not covered by current specs
+     - Request specification updates or human guidance
+     - DO NOT proceed with implementation until specifications are updated
+     - Document potential impacts on existing architecture
+   - If work partially matches specifications:
+     - Implement only the parts clearly defined in specs
+     - Request clarification for undefined aspects
+
+## Core Specification Documents
+
+The following documents must be referenced when implementing related features:
+
+- [Architecture Overview](mdc:specs/architecture-overview.md) - System design, component interactions, and technical stack decisions
+- [API Specification](mdc:specs/api-specification.md) - API endpoints, request/response formats, and authentication
+- [JavaScript Tracker](mdc:specs/js-tracker-specification.md) - Client-side tracking implementation and behavior
+- [Database Schema](mdc:specs/database-schema.md) - Data models, relationships, and storage patterns
+- [Deployment Guide](mdc:specs/deployment.md) - Infrastructure requirements and deployment procedures
+
+## Implementation Requirements
+
+1. **Feature Alignment**
+   - All new features must align with the architecture outlined in the specifications
+   - Any deviations must be documented and approved before implementation
+   - Unspecified features require specification updates before implementation
+
+2. **API Compliance**
+   - All API endpoints must follow the patterns defined in [API Specification](mdc:specs/api-specification.md)
+   - Response formats must match the documented schemas
+   - Error handling must implement specified status codes and messages
+   - New endpoints require specification updates before implementation
+
+3. **Client-Side Integration**
+   - JavaScript tracker implementations must maintain the size limit (<5KB gzipped)
+   - All tracking calls must use the documented API endpoints
+   - Privacy features (IP anonymization, no cookies) must be preserved
+   - New client features require specification updates before implementation
+
+4. **Data Management**
+   - Database operations must follow the schema defined in [Database Schema](mdc:specs/database-schema.md)
+   - Data retention policies must be implemented as specified
+   - GDPR compliance features must be maintained
+   - Schema changes require specification updates before implementation
+
+5. **Deployment Considerations**
+   - All components must support the documented deployment patterns
+   - Infrastructure requirements must align with the deployment guide
+   - Security measures must be implemented as specified
+   - Infrastructure changes require specification updates before implementation
+
+## Key Principles
+
+- Privacy-first design in all implementations
+- Performance optimization (minimal JavaScript, efficient queries)
+- Server-side rendering with progressive enhancement
+- Simple self-hosting capability
+- GDPR compliance by default
+- No implementation without specification
+
+## Reference Documentation
+
+The complete technical specifications can be found in [SPECS.md](mdc:SPECS.md), which serves as the central index for all technical documentation.
+
+## Specification Update Process
+
+When work falls outside existing specifications:
+
+1. **Assessment Required**
+   - Document the gaps in current specifications
+   - Outline potential impacts on existing architecture
+   - Identify dependencies and affected components
+
+2. **Update Request**
+   - Request human review and guidance
+   - Propose specification additions or modifications
+   - Wait for approval before proceeding
+
+3. **Implementation Hold**
+   - DO NOT implement features lacking specification coverage
+   - Maintain existing architectural boundaries
+   - Preserve established privacy and security requirements
