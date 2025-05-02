@@ -9,6 +9,48 @@ Nyla is a privacy-focused, self-hosted web analytics platform designed for simpl
 3. Analytics Dashboard - Server-rendered hypermedia interface
 4. Storage Layer - Event data persistence
 
+## System Architecture Diagrams
+
+### Component Interaction
+```mermaid
+graph TD
+    Client[Client Website] -->|Events| Tracker[JS Tracker]
+    Tracker -->|HTTP POST| API[Collection API]
+    API -->|Write| DB[(SQLite)]
+    API -->|SSE| Dashboard[Analytics Dashboard]
+    Dashboard -->|Query| DB
+    Dashboard -->|HTML| Browser[Browser]
+    Browser -->|HTMX| Dashboard
+```
+
+### Data Flow
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant T as Tracker
+    participant A as API
+    participant D as Dashboard
+    participant DB as SQLite
+
+    C->>T: Page Load
+    T->>A: Send Event
+    A->>DB: Store Event
+    A->>D: Broadcast Update
+    D->>DB: Query Stats
+    D->>C: Update UI
+```
+
+### Deployment Architecture
+```mermaid
+graph TD
+    subgraph Container[Single Container]
+        API[Go Binary] -->|embed| Static[Static Assets]
+        API -->|embed| Templates[HTML Templates]
+        API -->|file| DB[(SQLite)]
+    end
+    Client -->|HTTP/SSE| Container
+```
+
 ## Key Technical Decisions
 
 ### Backend Stack
@@ -43,6 +85,35 @@ Nyla is a privacy-focused, self-hosted web analytics platform designed for simpl
   - Server-side rendering
   - Progressive enhancement
   - Real-time updates via SSE
+
+- **State Management**:
+  - Server-side state in SQLite
+  - Client-side state via HTMX triggers
+  - Local storage for preferences
+  - SSE for real-time updates
+  - No complex client state management needed
+
+- **Build Tooling**:
+  - esbuild for JS minification
+    - Fast builds
+    - Modern output
+    - Tree shaking
+  - PostCSS for Tailwind
+    - CSS purging
+    - Minimal production CSS
+  - go:embed for static assets
+    - Single binary deployment
+    - No external asset server needed
+
+- **Component Library**:
+  - TailwindUI components
+    - Consistent design language
+    - Accessible by default
+    - Mobile-first responsive
+  - Custom HTMX components
+    - Reusable interaction patterns
+    - Progressive enhancement
+    - Minimal JavaScript
 
 - **Templates**: Go html/template
   - Built into Go standard library

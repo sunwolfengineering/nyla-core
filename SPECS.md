@@ -12,6 +12,9 @@ Nyla Analytics is a privacy-focused, self-hosted web analytics platform designed
 - Infrastructure approach
 - Development workflow
 - Security and privacy considerations
+- System architecture diagrams
+- Component interactions
+- Data flow patterns
 
 ### [API Specification](specs/api-specification.md)
 - Hypermedia-driven interface design
@@ -48,6 +51,16 @@ Nyla Analytics is a privacy-focused, self-hosted web analytics platform designed
 - Maintenance tasks
 - Security hardening
 
+### [Development Guide](specs/development.md)
+- Environment setup
+- Required tools and versions
+- Local development workflow
+- Git workflow and conventions
+- Testing strategy
+- CI/CD pipeline
+- Debugging guidelines
+- Code organization
+
 ## Domain Configuration
 
 The [Domain Conventions](.cursor/rules/domain-conventions.mdc) rule defines the domain structure for all Nyla services:
@@ -77,9 +90,9 @@ The [Domain Conventions](.cursor/rules/domain-conventions.mdc) rule defines the 
 
 3. **Performance**
    - Efficient data storage
-   - Real-time capabilities
+   - Real-time capabilities via SSE
    - Optimized queries
-   - Small client footprint
+   - Small client footprint (<5KB)
    - Caching strategies
 
 4. **Self-Hosted**
@@ -89,6 +102,27 @@ The [Domain Conventions](.cursor/rules/domain-conventions.mdc) rule defines the 
    - Clear upgrade path
    - Resource efficient
 
+## Technical Stack
+
+1. **Backend**
+   - Go for server implementation
+   - SQLite for data storage
+   - HTML-over-the-wire with HTMX
+   - Server-sent events for real-time
+
+2. **Frontend**
+   - HTMX + Hyperscript
+   - TailwindUI components
+   - Server-side state management
+   - Progressive enhancement
+   - Dark/light themes
+
+3. **Build Tools**
+   - esbuild for JS
+   - PostCSS for Tailwind
+   - go:embed for assets
+   - GitHub Actions for CI/CD
+
 ## Implementation Status
 
 The specifications are currently in development, with the following status:
@@ -97,6 +131,8 @@ The specifications are currently in development, with the following status:
 - ✅ API design patterns
 - ✅ Database schema
 - ✅ Deployment strategy
+- ✅ Development workflow
+- ✅ Technical stack decisions
 - 🚧 HTML templates and components
 - 🚧 Integration examples
 - 📝 Documentation
