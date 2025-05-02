@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Nyla Domain Conventions
+
+## Root Domain
+The root domain for all Nyla services is `getnyla.app`. This should be used consistently across all configuration files and documentation.
+
+## Subdomain Structure
+
+The following subdomains are defined for different services:
+
+- `app.getnyla.app` - Main application interface
+- `dashboard.getnyla.app` - Analytics dashboard
+- `api.getnyla.app` - API endpoints
+- `cdn.getnyla.app` - Content delivery network
+
+## Implementation Examples
+
+### JavaScript Tracker
+The JavaScript tracker should always reference the CDN domain:
+```javascript
+<script async src="https://cdn.getnyla.app/tracker.js"></script>
+```
+
+### API Endpoints
+All API endpoints should use the API subdomain:
+```
+https://api.getnyla.app/v1/collect
+https://api.getnyla.app/v1/stats/realtime
+```
+
+### Configuration Files
+Domain configuration in [specs/deployment.md](mdc:specs/deployment.md) should use the correct domains:
+```yaml
+allowed_origins:
+  - https://app.getnyla.app
+  - https://dashboard.getnyla.app
+```
+
+### CSP Headers
+Content Security Policy headers in [specs/js-tracker-specification.md](mdc:specs/js-tracker-specification.md) should include:
+```
+script-src 'self' cdn.getnyla.app
+connect-src api.getnyla.app
+```
+
+## Domain Usage Guidelines
+
+1. Never use bare IP addresses in production configurations
+2. Always use HTTPS for all domains and subdomains
+3. Maintain consistent casing (always use lowercase)
+4. Use the appropriate subdomain for the service type
+5. Include www.getnyla.app redirect to getnyla.app for marketing site
+
+## Testing and Development
+
+For local development:
+- Use `localhost` or `127.0.0.1` with appropriate ports
+- Never use `.dev` or other TLDs that might conflict with real domains
+- Use environment-specific configuration to override domains
+
+## SSL/TLS Configuration
+
+- Wildcard certificate for *.getnyla.app
+- Individual certificate for getnyla.app and www.getnyla.app
+- Auto-renewal through Let's Encrypt
+- HSTS enabled for all domains
