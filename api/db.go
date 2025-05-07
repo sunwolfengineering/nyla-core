@@ -78,8 +78,8 @@ func (e *Events) Add(payload CollectorPayload, hash string, ua useragent.UserAge
 		ua.Name,
 		ua.OS,
 		"not-implemented",
-		geo.Country,
-		geo.RegionName,
+		"not-implemented",
+		"not-implemented",
 	)
 
 	return err

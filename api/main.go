@@ -17,8 +17,6 @@
 package main
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,24 +44,6 @@ type CollectorPayload struct {
 	Data   CollectorData `json:"data"`
 }
 
-// decodePayload decodes a base64 encoded string and unmarshals it into a CollectorPayload struct.
-//
-// It takes a single parameter:
-//   - s: a string representing the base64 encoded data.
-//
-// It returns two values:
-//   - payload: a CollectorPayload struct representing the decoded and unmarshaled data.
-//   - err: an error if there was any issue during the decoding or unmarshaling process.
-func decodePayload(s string) (payload CollectorPayload, err error) {
-	b, err := base64.StdEncoding.DecodeString(s)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal(b, &payload)
-	return
-}
-
 func main() {
 	fmt.Println("nyla version:", Version)
 
@@ -71,43 +51,61 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/collect", collect)
+	http.HandleFunc("GET /v1/collect", getCollectV1)
 
 	fmt.Println("listening on :9876")
 	http.ListenAndServe(":9876", nil)
 }
 
-func collect(w http.ResponseWriter, r *http.Request) {
-	defer w.WriteHeader(http.StatusOK)
+// getCollectV1 handles GET /v1/collect for single event collection via query parameters.
+func getCollectV1(w http.ResponseWriter, r *http.Request) {
+	// Parse query parameters
+	siteID := r.URL.Query().Get("site_id")
+	eventType := r.URL.Query().Get("type")
+	url := r.URL.Query().Get("url")
+	referrer := r.URL.Query().Get("referrer")
 
-	data := r.URL.Query().Get("data")
-	payload, err := decodePayload(data)
-	if err != nil {
-		fmt.Print(err)
+	// Minimal required fields
+	if siteID == "" || eventType == "" {
+		http.Error(w, "Missing required parameters", http.StatusBadRequest)
+		return
 	}
 
-	ua := useragent.Parse(payload.Data.UserAgent)
-
-	for k, v := range r.Header {
-		fmt.Println(k, v)
+	// Build CollectorPayload (reuse legacy struct)
+	payload := CollectorPayload{
+		SiteID: siteID,
+		Data: CollectorData{
+			Type:      eventType,
+			Event:     url, // For MVP, store url in Event field
+			UserAgent: r.UserAgent(),
+			Hostname:  r.Host,
+			Referrer:  referrer,
+		},
 	}
 
-	ip, err := ipFromRequest([]string{"X-Forwarded-For", "X-Real-IP"}, r)
-	if err != nil {
-		fmt.Println("error getting IP:", err)
+	ua := useragent.Parse(r.UserAgent())
+
+	ip, _ := ipFromRequest([]string{"X-Forwarded-For", "X-Real-IP"}, r)
+	// geoInfo, _ := getGeoInfo(ip.String()) // TODO: add geo info
+	hash, _ := generatePrivateIDHash(ip.String(), r.UserAgent(), r.Host, siteID)
+
+	// Store event
+	if err := events.Add(payload, hash, ua, nil); err != nil {
+		fmt.Println("error adding event:", err) // TODO: error handling strategy is not yet defined
 	}
 
-	geoInfo, err := getGeoInfo(ip.String())
-	if err != nil {
-		fmt.Println("error getting geo info:", err)
-	}
-
-	hash, err := generatePrivateIDHash(ip.String(), payload.Data.UserAgent, payload.Data.Hostname, payload.SiteID)
-	if err != nil {
-		fmt.Println("error generating private ID hash:", err)
-	}
-
-	if err := events.Add(payload, hash, ua, geoInfo); err != nil {
-		fmt.Println(err)
-	}
+	// Return 1x1 transparent GIF
+	w.Header().Set("Content-Type", "image/gif")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte{ // 1x1 transparent GIF
+		0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00,
+		0x01, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0xFF, 0xFF, 0xFF, 0x21, 0xF9, 0x04, 0x01, 0x00,
+		0x00, 0x00, 0x00, 0x2C, 0x00, 0x00, 0x00, 0x00,
+		0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44,
+		0x01, 0x00, 0x3B,
+	})
 }
