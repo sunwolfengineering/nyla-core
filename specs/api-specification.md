@@ -8,33 +8,74 @@ The Nyla Analytics API is a hypermedia-driven service that handles both event co
 
 ### Event Collection
 
+#### GET /v1/collect
+
+Collects a single event (typically a pageview or simple custom event) via HTTP GET. This is designed for maximum compatibility (e.g., email open tracking, image beacons, JS tracker fallback).
+
+**Query Parameters:**
+- `site_id` (string, required): Site identifier
+- `type` (string, required): Event type (e.g., `pageview`, `event`)
+- `url` (string, optional): Page URL
+- `title` (string, optional): Page title
+- `referrer` (string, optional): Referrer URL
+- `timestamp` (string, optional): ISO8601 timestamp (defaults to server time if omitted)
+- `metadata` (string, optional): Base64-encoded JSON or URL-encoded key-value pairs for custom metadata
+
+**Authentication:**
+- API key via `Authorization: Bearer ...` header (optional for GET, but recommended for production)
+
+**Response:**
+- By default, returns a 1x1 transparent GIF (for use as a tracking pixel)
+- If `Accept: application/json` is sent, returns:
+  ```json
+  { "success": true }
+  ```
+- On error, returns a minimal error GIF or JSON error (if requested)
+
+**Use Cases:**
+- Email open tracking
+- JS tracker fallback
+- Image/script beacons
+
 #### POST /v1/collect
 
-Collects a single event or batch of events. This endpoint accepts JSON for compatibility with the JavaScript tracker.
+Collects one or more events (batch or complex events) via HTTP POST. Accepts a JSON body for richer payloads and batch processing.
 
+**Request Body:**
 ```json
 {
-  "events": [{
-    "type": "pageview",
-    "url": "https://app.getnyla.app/dashboard",
-    "title": "Analytics Dashboard",
-    "referrer": "https://getnyla.app",
-    "timestamp": "2024-03-14T15:09:26Z",
-    "metadata": {
-      "screen_size": "1920x1080",
-      "language": "en-US"
+  "events": [
+    {
+      "type": "pageview",
+      "url": "https://app.getnyla.app/dashboard",
+      "title": "Analytics Dashboard",
+      "referrer": "https://getnyla.app",
+      "timestamp": "2024-03-14T15:09:26Z",
+      "metadata": {
+        "screen_size": "1920x1080",
+        "language": "en-US"
+      }
     }
-  }]
+  ],
+  "site_id": "default"
 }
 ```
 
-Response:
+**Authentication:**
+- API key via `Authorization: Bearer ...` header (required for POST)
+
+**Response:**
 ```json
 {
   "success": true,
   "processed": 1
 }
 ```
+
+**Use Cases:**
+- JavaScript tracker (batch mode)
+- Server-to-server event ingestion
+- Bulk uploads
 
 ### Analytics Interface
 
