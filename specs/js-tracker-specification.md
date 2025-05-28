@@ -20,25 +20,25 @@ The Nyla JavaScript tracker is a lightweight, privacy-focused analytics script t
 ### Script Tag
 
 ```html
-<script async src="https://cdn.getnyla.app/tracker.js"></script>
+<script async src="https://cdn.getnyla.app/collect.js"></script>
 <script>
   window.nyla = window.nyla || function(...args) {
     (window.nyla.q = window.nyla.q || []).push(args);
   };
-  nyla('init', { site: 'default' });
+  nyla('init', { site: 'abc123' });
 </script>
 ```
 
 ### NPM Package
 
 ```bash
-npm install @nyla/tracker
+npm install @nyla/collect
 ```
 
 ```typescript
-import { init } from '@nyla/tracker';
+import { init } from '@nyla/collect';
 
-init({ site: 'default' });
+init({ site: 'abc123' });
 ```
 
 ## Configuration
@@ -73,7 +73,7 @@ Initialize the tracker with configuration.
 
 ```javascript
 nyla('init', {
-  site: 'default',
+  site: 'abc123',
   debug: true,
   privacy: {
     respectDNT: true
