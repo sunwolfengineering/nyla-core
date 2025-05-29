@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "GDPR compliant privacy focused web analytics",
   "scripts": {
-    "build": "rm -rf static/collect* && npx tsc src/collect.ts --outDir static",
-    "start": "http-server"
+    "build": "rm -rf dist/collect* && npx tsc src/collect.ts --outDir dist"
   },
   "license": "LGPL-3.0-only",
   "devDependencies": {
