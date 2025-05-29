@@ -91,9 +91,10 @@ func getCollectV1(w http.ResponseWriter, r *http.Request) {
 
 	// Store event
 	if err := events.Add(payload, hash, ua, nil); err != nil {
-		fmt.Println("error adding event:", err) // TODO: error handling strategy is not yet defined
+		log.Println("error adding event:", err) // TODO: error handling strategy is not yet defined
 	}
 
+	log.Println("event added", payload) // TODO: better logging strategy is needed
 	// Return 1x1 transparent GIF
 	w.Header().Set("Content-Type", "image/gif")
 	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
