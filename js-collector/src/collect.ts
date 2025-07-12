@@ -54,7 +54,7 @@ function log(level: 'debug' | 'info' | 'warn' | 'error', ...args: any[]) {
 }
 
 function getEndpoint(): string {
-  return (config && config.endpoint) || 'https://api.getnyla.app/v1/collect';
+  return (config && config.endpoint) || 'https://api.getnyla.app';
 }
 
 function getSiteId(): string | null {
@@ -90,7 +90,7 @@ function sendPageview(event: PageviewEvent) {
   });
 
   const endpoint = getEndpoint();
-  const url = `${endpoint}?${params.toString()}`;
+  const url = `${endpoint}/v1/collect?${params.toString()}`;
   log('debug', '[nyla] About to send pageview:', {
     endpoint,
     params: Object.fromEntries(params.entries()),

@@ -1,0 +1,33 @@
+# Nyla Analytics Environment Configuration
+# Copy this file to .envrc and customize for your local environment
+# Run 'direnv allow' after making changes
+
+# Database Configuration (required for Goose migrations)
+export GOOSE_DRIVER="sqlite3"
+export GOOSE_DBSTRING="./nyla.db"
+export GOOSE_MIGRATION_DIR="./migrations"
+
+# API Server Configuration
+export API_PORT="9876"
+export API_BASE_URL="http://localhost:9876"
+
+# UI Server Configuration  
+export UI_PORT="8080"
+
+# CORS Configuration
+export CORS_ALLOWED_ORIGINS="http://localhost:8080,https://localhost"
+export CORS_ALLOWED_HEADERS="Content-Type,HX-Request,HX-Target,HX-Current-URL,HX-Trigger,HX-Trigger-Name,HX-History-Restore-Request"
+export CORS_EXPOSED_HEADERS="HX-Redirect,HX-Location,HX-Push,HX-Refresh,HX-Trigger,HX-Trigger-After-Settle,HX-Trigger-After-Swap"
+export CORS_ALLOW_CREDENTIALS="true"
+
+# Development Settings
+export NYLA_ENV="development"
+export NYLA_LOG_LEVEL="debug"
+
+# Optional: Geo IP Configuration (if using external service)
+# export GEOIP_API_KEY=""
+# export GEOIP_PROVIDER="maxmind"
+
+# Optional: Analytics Configuration
+# export NYLA_SITE_ID="default-site"
+# export NYLA_SAMPLING_RATE="1.0"

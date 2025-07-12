@@ -3,6 +3,7 @@ module github.com/joepurdy/nyla
 go 1.24.2
 
 require (
+	github.com/chasefleming/elem-go v0.30.0
 	github.com/mileusna/useragent v1.3.5
 	modernc.org/sqlite v1.37.0
 )

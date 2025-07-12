@@ -1,0 +1,11 @@
+node_modules/
+
+# Build artifacts
+bin/
+
+# Environment configuration
+.envrc
+
+# sqlite
+nyla.db
+data/

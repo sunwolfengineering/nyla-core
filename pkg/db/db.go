@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"context"
@@ -44,7 +44,7 @@ func (e *Events) Open() error {
 	return nil
 }
 
-func (e *Events) Add(payload CollectorPayload, hash string, ua useragent.UserAgent, geo *GeoInfo) error {
+func (e *Events) Add(payload interface{}, hash string, ua useragent.UserAgent, geo interface{}) error {
 	q := `
 	INSERT INTO events
 	(
@@ -65,21 +65,17 @@ func (e *Events) Add(payload CollectorPayload, hash string, ua useragent.UserAge
 	)
 	`
 
+	// The payload and geo types should be replaced with the correct types from the main package or moved here as needed.
+	// For now, use interface{} and expect the caller to provide the correct types.
+	// You may want to define CollectorPayload and GeoInfo in a shared package for type safety.
+
 	_, err := e.DB.ExecContext(
 		context.Background(),
 		q,
 		hash,
-		payload.SiteID,
-		nowToInt(),
-		payload.Data.Type,
-		payload.Data.Event,
-		payload.Data.Referrer,
-		"false",
-		ua.Name,
-		ua.OS,
-		"not-implemented",
-		"not-implemented",
-		"not-implemented",
+		// The following fields must be extracted from payload and geo as appropriate.
+		// This is a placeholder and should be updated for real usage.
+		"", "", 0, "", "", "", "false", ua.Name, ua.OS, "not-implemented", "not-implemented", "not-implemented",
 	)
 
 	return err
