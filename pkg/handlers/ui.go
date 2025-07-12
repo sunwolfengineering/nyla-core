@@ -22,7 +22,7 @@ func (h *UIHandlers) DashboardHandler(w http.ResponseWriter, r *http.Request) {
 				attrs.Content: "width=device-width, initial-scale=1.0",
 			}),
 			elem.Title(nil, elem.Text("Nyla Analytics Dashboard")),
-			elem.Script(attrs.Props{attrs.Src: "https://unpkg.com/htmx.org@2.0.4"}),
+			elem.Script(attrs.Props{attrs.Src: "https://unpkg.com/htmx.org@1.9.12"}),
 			elem.Script(attrs.Props{attrs.Src: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"}),
 		),
 		elem.Body(attrs.Props{attrs.Class: "bg-gray-50 min-h-screen"},

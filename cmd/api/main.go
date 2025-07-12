@@ -59,16 +59,29 @@ func getEnvDefault(key, def string) string {
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if origin != "" && (corsAllowedOrigins == "*" || strings.Contains(corsAllowedOrigins, origin)) {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Vary", "Origin")
-		} else if corsAllowedOrigins == "*" {
+		
+		// Handle allowed origins
+		if corsAllowedOrigins == "*" {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
+		} else if origin != "" {
+			// Check if origin is in the allowed origins list
+			allowedOriginsList := strings.Split(corsAllowedOrigins, ",")
+			for _, allowedOrigin := range allowedOriginsList {
+				if strings.TrimSpace(allowedOrigin) == origin {
+					w.Header().Set("Access-Control-Allow-Origin", origin)
+					w.Header().Set("Vary", "Origin")
+					break
+				}
+			}
 		}
+		
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", corsAllowedHeaders)
 		w.Header().Set("Access-Control-Expose-Headers", corsExposedHeaders)
 		w.Header().Set("Access-Control-Allow-Credentials", corsAllowCredentials)
 
+		// Handle preflight requests
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
