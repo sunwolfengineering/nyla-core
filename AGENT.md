@@ -18,6 +18,9 @@
 - **Go Style**: Standard Go formatting (gofmt), use testify for tests, table-driven test patterns
 - **Privacy First**: GDPR compliant, no cookies, IP anonymization, <5KB JS tracker
 - **Commits**: Conventional commits format: `type(scope): description`
+  - **Types**: `feat` (features), `fix` (bug fixes), `docs` (documentation), `refactor` (code refactoring), `test` (tests), `chore` (maintenance)
+  - **Scopes**: `db` (database/migrations), `api` (REST API), `ui` (user interface), `js` (JavaScript tracker), `deploy` (deployment), `build` (build system)
+  - **Examples**: `feat(db): add sites table migration`, `fix(api): correct event collection validation`, `docs(readme): update installation guide`
 - **Dependencies**: Minimal external deps - elem-go for HTML, modernc.org/sqlite, useragent parsing
 
 ## Development Rules
