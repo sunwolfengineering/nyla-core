@@ -1,4 +1,4 @@
-package main
+package geo
 
 import (
 	"encoding/json"
@@ -14,8 +14,6 @@ var (
 	GEOIP_HOST  = getEnv("GEOIP_HOST", "localhost:8080")
 )
 
-// getEnv retrieves the value of the environment variable named by the key
-// or returns the default value if the environment variable is not set.
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
@@ -34,13 +32,7 @@ type GeoInfo struct {
 	Longitude  string `json:"longitude"`
 }
 
-// ipFromRequest retrieves the client's IP address from the HTTP headers in a given request.
-//
-// The function takes two parameters: headers, a slice of strings representing the desired headers to check,
-// and r, a pointer to an http.Request object containing the HTTP request information.
-//
-// The function returns a net.IP object, representing the client's IP address, and an error, if any.
-func ipFromRequest(headers []string, r *http.Request) (net.IP, error) {
+func IPFromRequest(headers []string, r *http.Request) (net.IP, error) {
 	remoteIP := ""
 	for _, h := range headers {
 		remoteIP = r.Header.Get(h)
@@ -67,10 +59,6 @@ func ipFromRequest(headers []string, r *http.Request) (net.IP, error) {
 	return ip, nil
 }
 
-// ipFromForwardedForHeader returns the first IP address from the "Forwarded-For" header value.
-//
-// It takes a string parameter `v` which represents the "Forwarded-For" header value.
-// The function returns a string which is the first IP address from the header value.
 func ipFromForwardedForHeader(v string) string {
 	sep := strings.Index(v, ",")
 	if sep == -1 {
@@ -79,15 +67,7 @@ func ipFromForwardedForHeader(v string) string {
 	return v[:sep]
 }
 
-// getGeoInfo retrieves geographical information for a given IP address.
-//
-// It takes a string parameter `ip` which represents the IP address for which
-// the geographical information needs to be fetched.
-//
-// It returns a pointer to a `GeoInfo` struct and an error. The `GeoInfo`
-// struct contains information like the country, region, city, latitude and
-// longitude for the given IP address.
-func getGeoInfo(ip string) (*GeoInfo, error) {
+func GetGeoInfo(ip string) (*GeoInfo, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s://%s/json?ip=%s", GEOIP_PROTO, GEOIP_HOST, ip), nil)
 	if err != nil {
 		return nil, err

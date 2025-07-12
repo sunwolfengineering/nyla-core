@@ -1,6 +1,6 @@
 # Nyla API Development Guide
 
-This guide covers local development for the Nyla API service. For full project setup, see the main development spec at [`specs/development.md`](../specs/development.md).
+This guide covers local development for the Nyla API service. For full project setup, see the main development spec at [`specs/development.md`](specs/development.md).
 
 ---
 
@@ -18,17 +18,15 @@ Optional:
 
 ## Environment Setup: direnv
 
-This project uses [direnv](https://direnv.net/) to automatically load environment variables from the `.envrc` file in the **`api/` directory**. These variables are required for Goose migrations and other development tasks in the API service.
+This project uses [direnv](https://direnv.net/) to automatically load environment variables from the `.envrc` file. These variables are required for Goose migrations and other development tasks in the API service.
 
-**After cloning the repository, you must change into the `api/` directory and run:**
+**After cloning the repository, you must run the allow command after reviewing the .envrc file:**
 ```bash
-cd api
-# (or ensure you are in the api directory)
 direnv allow
 ```
-This will trust the `.envrc` file in `api/` and ensure all required environment variables (such as `GOOSE_DRIVER` and `GOOSE_DBSTRING`) are set for your shell session.
+This will trust the `.envrc` file and ensure all required environment variables (such as `GOOSE_DRIVER` and `GOOSE_DBSTRING`) are set for your shell session.
 
-If you skip this step, you may see errors from Goose about missing drivers, database strings, or migration files when working in the `api/` directory.
+If you skip this step, you may see errors from Goose about missing drivers, database strings, or migration files.
 
 ---
 
@@ -37,23 +35,20 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/joepurdy/nyla.git
-   cd nyla/api
+   cd nyla
    ```
 
 2. **Trust Direnv Config**
-   - From the `api/` directory:
    ```bash
    direnv allow
    ```
 
 2. **Install Dependencies**
-   - From the `api/` directory:
    ```bash
    go mod download
    ```
 
 3. **Initialize the Database**
-   - From the `api/` directory:
      ```bash
      make migrate
      make seed
@@ -65,14 +60,12 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 ## Building and Running the API
 
 - **Build the API binary:**
-  - From the `api/` directory:
   ```bash
   make nyla-api
   ```
 - **Run the API:**
-  - From the `api/` directory:
   ```bash
-  ./nyla-api
+  ./bin/nyla-api
   ```
 
 ---
@@ -80,22 +73,18 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 ## Database Management
 
 - **Run migrations:**
-  - From the `api/` directory:
   ```bash
   make migrate
   ```
 - **Reset all migrations:**
-  - From the `api/` directory:
   ```bash
   make migrate-reset
   ```
 - **Check migration status:**
-  - From the `api/` directory:
   ```bash
   make migrate-status
   ```
 - **Seed the database:**
-  - From the `api/` directory:
   ```bash
   make seed
   ```
@@ -107,7 +96,7 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 - **Missing Goose:**
   - Install with: `go install github.com/pressly/goose/v3/cmd/goose@latest`
 - **Database file issues:**
-  - Ensure you have write permissions in the `api/` directory.
+  - Ensure you have write permissions in the `nyla` directory.
   - Delete `nyla.db` and re-run `make migrate` if migrations fail.
 - **Build errors:**
   - Check Go version (`go version`).
@@ -120,5 +109,5 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 ---
 
 ## Reference
-- Main project development guide: [`../specs/development.md`](../specs/development.md)
+- Main project development guide: [`/specs/development.md`](specs/development.md)
 - For issues not covered here, check the main guide or open an issue. 

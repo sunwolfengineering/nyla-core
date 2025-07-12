@@ -2,3 +2,7 @@ node_modules/
 
 # Build artifacts
 bin/
+
+# sqlite
+nyla.db
+data/
