@@ -14,3 +14,8 @@ nyla-ui
 # sqlite
 nyla.db
 data/
+
+# Test coverage artifacts
+coverage.out
+coverage.html
+*.coverprofile
