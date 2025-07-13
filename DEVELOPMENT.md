@@ -1,6 +1,6 @@
-# Nyla API Development Guide
+# Nyla Core Development Guide
 
-This guide covers local development for the Nyla API service. For full project setup, see the main development spec at [`specs/development.md`](specs/development.md).
+This guide covers local development for the Nyla Core analytics engine. For complete project specifications, see [`specs/development.md`](specs/development.md).
 
 ---
 
@@ -18,7 +18,7 @@ Optional:
 
 ## Environment Setup: direnv
 
-This project uses [direnv](https://direnv.net/) to automatically load environment variables from the `.envrc` file. These variables are required for Goose migrations and other development tasks in the API service.
+This project uses [direnv](https://direnv.net/) to automatically load environment variables from the `.envrc` file. These variables are required for Goose migrations and other development tasks in the core analytics service.
 
 ### Initial Setup
 
@@ -45,12 +45,10 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 - `GOOSE_DBSTRING`: Database connection string (default: `./nyla.db`)
 - `GOOSE_MIGRATION_DIR`: Migration files directory (default: `./migrations`)
 
-#### API Server Configuration
-- `API_PORT`: API server port (default: `9876`)
-- `API_BASE_URL`: Base URL for API server (default: `http://localhost:9876`)
-
-#### UI Server Configuration
-- `UI_PORT`: UI server port (default: `8080`)
+#### Core Server Configuration
+- `API_PORT`: Core API server port (default: `9876`)
+- `API_BASE_URL`: Base URL for core API server (default: `http://localhost:9876`)
+- `UI_PORT`: Core dashboard port (default: `8080`)
 
 #### CORS Configuration
 - `CORS_ALLOWED_ORIGINS`: Comma-separated list of allowed origins (default: `http://localhost:8080,https://localhost`)
@@ -97,8 +95,8 @@ direnv allow
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/joepurdy/nyla.git
-   cd nyla
+   git clone https://github.com/joepurdy/nyla-core.git
+   cd nyla-core
    ```
 
 2. **Set up Environment Configuration**
@@ -122,16 +120,17 @@ direnv allow
 
 ---
 
-## Building and Running the API
+## Building and Running the Core Server
 
-- **Build the API binary:**
+- **Build the core analytics binary:**
   ```bash
   make nyla-api
   ```
-- **Run the API:**
+- **Run the core server:**
   ```bash
   ./bin/nyla-api
   ```
+  This starts both the analytics API and basic dashboard interface.
 
 ---
 
@@ -171,12 +170,12 @@ direnv allow
   - Check Go version (`go version`).
   - Run `go mod tidy` to clean up dependencies.
 - **Port conflicts:**
-  - If the API fails to start, ensure port 9876 (or your configured port) is free.
-  - Check the UI port 8080 is available.
+  - If the core server fails to start, ensure port 9876 (or your configured port) is free.
+  - Check the dashboard port 8080 is available.
   - Modify ports in `.envrc` if needed and run `direnv reload`.
 - **CORS issues:**
   - Update `CORS_ALLOWED_ORIGINS` in `.envrc` to include your development URLs.
-  - Ensure both API and UI servers are running for local development.
+  - Ensure the core server is running for local development.
 - **Seeding errors:**
   - Ensure `data/dump.data` exists and is formatted correctly.
 

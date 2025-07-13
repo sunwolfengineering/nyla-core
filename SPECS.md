@@ -110,7 +110,7 @@ For self-hosted deployments, Core supports:
    - Extensible architecture
    - Clear separation of concerns
    - Open development process
-   - Apache 2.0 licensing
+   - Strong copyleft licensing (AGPL v3)
 
 ## Technical Stack
 
@@ -159,7 +159,7 @@ Components under development:
 
 ## Licensing
 
-- Apache 2.0 (permissive open source)
+Nyla Analytics Core is licensed under the **GNU Affero General Public License v3 (AGPL v3)**. This strong copyleft license ensures that any modifications or network services using Nyla Core must provide source code to users, promoting transparency and community contributions.
 
 ## Contributing
 
