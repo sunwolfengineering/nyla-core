@@ -13,13 +13,21 @@ The Nyla Analytics Core API is a hypermedia-driven service that handles event co
 Collects a single event (typically a pageview or simple custom event) via HTTP GET. This is designed for maximum compatibility (e.g., email open tracking, image beacons, JS tracker fallback).
 
 **Query Parameters:**
-- `site_id` (string, required): Site identifier (fixed to "default" in core)
+- `site_id` (string, optional): Site identifier. Must be "default" if provided. If omitted, defaults to "default"
 - `type` (string, required): Event type (e.g., `pageview`, `event`)
 - `url` (string, optional): Page URL
 - `title` (string, optional): Page title
 - `referrer` (string, optional): Referrer URL
 - `timestamp` (string, optional): ISO8601 timestamp (defaults to server time if omitted)
 - `metadata` (string, optional): Base64-encoded JSON or URL-encoded key-value pairs for custom metadata
+
+**Error Responses:**
+- `400 Bad Request`: If `site_id` is provided but not equal to "default"
+  ```json
+  {
+    "error": "Invalid site_id. This instance only supports site_id='default'"
+  }
+  ```
 
 **Authentication:**
 - API key via `Authorization: Bearer ...` header (optional for GET, but recommended for production)

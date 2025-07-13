@@ -9,6 +9,8 @@ import (
 
 	"github.com/mileusna/useragent"
 	_ "modernc.org/sqlite"
+
+	"github.com/sunwolfengineering/nyla-core/pkg/constants"
 )
 
 type Event struct {
@@ -65,17 +67,22 @@ func (e *Events) Add(payload interface{}, hash string, ua useragent.UserAgent, g
 	)
 	`
 
-	// The payload and geo types should be replaced with the correct types from the main package or moved here as needed.
-	// For now, use interface{} and expect the caller to provide the correct types.
-	// You may want to define CollectorPayload and GeoInfo in a shared package for type safety.
-
+	// Always use the default site ID for single-site architecture
 	_, err := e.DB.ExecContext(
 		context.Background(),
 		q,
 		hash,
-		// The following fields must be extracted from payload and geo as appropriate.
-		// This is a placeholder and should be updated for real usage.
-		"", "", 0, "", "", "", "false", ua.Name, ua.OS, "not-implemented", "not-implemented", "not-implemented",
+		constants.DefaultSiteID, // Always use default site
+		nowToInt(),
+		"pageview", // Default type for now - should be extracted from payload
+		"", // URL - should be extracted from payload
+		"", // Referrer - should be extracted from payload
+		"false", // is_touch
+		ua.Name, 
+		ua.OS, 
+		"not-implemented", // device_type
+		"not-implemented", // country
+		"not-implemented", // region
 	)
 
 	return err
