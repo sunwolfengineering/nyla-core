@@ -1,18 +1,19 @@
 package handlers
 
 import (
-	"database/sql"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/chasefleming/elem-go"
 	"github.com/chasefleming/elem-go/attrs"
 	"github.com/mileusna/useragent"
 
+	"github.com/sunwolfengineering/nyla-core/internal/storage"
 	"github.com/sunwolfengineering/nyla-core/pkg/constants"
-	"github.com/sunwolfengineering/nyla-core/pkg/db"
 	"github.com/sunwolfengineering/nyla-core/pkg/geo"
 	"github.com/sunwolfengineering/nyla-core/pkg/hash"
 )
@@ -30,7 +31,7 @@ type CollectorPayload struct {
 }
 
 type Handlers struct {
-	Events *db.Events
+	DB *storage.DB
 }
 
 func (h *Handlers) GetCollectV1(w http.ResponseWriter, r *http.Request) {
@@ -51,35 +52,48 @@ func (h *Handlers) GetCollectV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Set defaults if not provided
 	if eventType == "" {
-		response := map[string]string{
-			"error": "Missing required parameter: type",
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
-		return
+		eventType = "pageview"
+	}
+	if url == "" {
+		url = r.Header.Get("Referer")
+	}
+	if referrer == "" {
+		referrer = r.Header.Get("Referer")
 	}
 
-	payload := CollectorPayload{
-		Data: CollectorData{
-			Type:      eventType,
-			Event:     url,
-			UserAgent: r.UserAgent(),
-			Hostname:  r.Host,
-			Referrer:  referrer,
+	// Parse user agent for metadata
+	ua := useragent.Parse(r.UserAgent())
+	ip, _ := geo.IPFromRequest([]string{"X-Forwarded-For", "X-Real-IP"}, r)
+	sessionID, _ := hash.GeneratePrivateIDHash(ip.String(), r.UserAgent(), r.Host, constants.DefaultSiteID)
+
+	// Create event using new storage API
+	event := &storage.Event{
+		Type:      eventType,
+		Timestamp: time.Now(),
+		URL:       url,
+		Referrer:  referrer,
+		SessionID: sessionID,
+		Metadata: map[string]interface{}{
+			"user_agent":   r.UserAgent(),
+			"hostname":     r.Host,
+			"browser_name": ua.Name,
+			"os_name":      ua.OS,
+			"is_bot":       ua.Bot,
 		},
 	}
 
-	ua := useragent.Parse(r.UserAgent())
-	ip, _ := geo.IPFromRequest([]string{"X-Forwarded-For", "X-Real-IP"}, r)
-	hashVal, _ := hash.GeneratePrivateIDHash(ip.String(), r.UserAgent(), r.Host, constants.DefaultSiteID)
-
-	if err := h.Events.Add(payload, hashVal, ua, nil); err != nil {
-		log.Println("error adding event:", err)
+	ctx := context.Background()
+	if err := h.DB.InsertEvent(ctx, event); err != nil {
+		log.Printf("Error inserting event: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
-	log.Println("event added", payload)
+	log.Printf("Event added: %s %s", eventType, url)
+	
+	// Return 1x1 transparent GIF
 	w.Header().Set("Content-Type", "image/gif")
 	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
 	w.Header().Set("Pragma", "no-cache")
@@ -96,19 +110,20 @@ func (h *Handlers) GetCollectV1(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) GetStatsRealtimeV1(w http.ResponseWriter, r *http.Request) {
-	db := h.Events.DB
-	var count int
-	// Enforce single-site architecture in the query
-	err := db.QueryRow("SELECT COUNT(*) FROM events WHERE type = 'pageview' AND site_id = ?", constants.DefaultSiteID).Scan(&count)
-	if err != nil && err != sql.ErrNoRows {
+	ctx := context.Background()
+	stats, err := h.DB.GetRealtimeStats(ctx)
+	if err != nil {
+		log.Printf("Error getting realtime stats: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "<div class='error'>Error: %v</div>", err)
 		return
 	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fragment := elem.Div(attrs.Props{"class": "bg-white rounded-lg shadow p-6"},
 		elem.Div(attrs.Props{"class": "text-sm text-gray-500"}, elem.Text("Total Pageviews")),
-		elem.Div(attrs.Props{"class": "text-2xl font-bold text-indigo-700 mt-2"}, elem.Text(fmt.Sprintf("%d", count))),
+		elem.Div(attrs.Props{"class": "text-2xl font-bold text-indigo-700 mt-2"}, 
+			elem.Text(fmt.Sprintf("%d", stats.PageviewsToday))),
 	).Render()
 	w.Write([]byte(fragment))
 }
