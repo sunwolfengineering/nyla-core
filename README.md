@@ -18,7 +18,7 @@ This is the core open-source version that powers single-site analytics. For mult
 - **IP anonymization** by default
 - **Configurable data retention** policies
 - **Essential metrics** - pageviews, visitors, top pages, referrers
-- **Open source** - AGPL v3 licensed
+- **Dual licensed** - GPL v3 (open source) + Commercial licensing available
 
 ## Technical Stack
 
@@ -84,6 +84,19 @@ Nyla Analytics Core is in active development:
 
 ## License
 
-Nyla Analytics Core is licensed under the **GNU Affero General Public License v3 (AGPL v3)** - see the [LICENSE](LICENSE) file for details.
+Nyla Analytics Core is **dual-licensed**:
 
-This strong copyleft license ensures that any modifications or network services using Nyla Core must provide source code to users, promoting transparency and community contributions to the analytics ecosystem.
+### 📖 Open Source License
+Licensed under the **GNU General Public License v3 (GPL v3)** for open source use - see the [LICENSE](LICENSE) file for details.
+
+### 💼 Commercial License
+Commercial licensing available for businesses that want to integrate Nyla Core into proprietary applications without GPL v3 obligations.
+
+**Choose the license that fits your needs:**
+- **Open source projects** → Use GPL v3 (free)
+- **Commercial/proprietary projects** → Contact us for commercial licensing
+- **SaaS providers** → Either license works, depending on your requirements
+
+📄 **Learn more**: See [LICENSING.md](LICENSING.md) for detailed licensing guide
+
+📧 **Commercial licensing**: [licensing@getnyla.app](mailto:licensing@getnyla.app)

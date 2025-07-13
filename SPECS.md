@@ -110,7 +110,7 @@ For self-hosted deployments, Core supports:
    - Extensible architecture
    - Clear separation of concerns
    - Open development process
-   - Strong copyleft licensing (AGPL v3)
+   - Dual licensing (GPL v3 + Commercial)
 
 ## Technical Stack
 
@@ -159,14 +159,41 @@ Components under development:
 
 ## Licensing
 
-Nyla Analytics Core is licensed under the **GNU Affero General Public License v3 (AGPL v3)**. This strong copyleft license ensures that any modifications or network services using Nyla Core must provide source code to users, promoting transparency and community contributions.
+Nyla Analytics Core is dual-licensed under:
+
+### Open Source License
+**GNU General Public License v3 (GPL v3)** - for open source projects and community use. This copyleft license ensures that modifications remain open source, promoting transparency and community contributions.
+
+### Commercial License
+**Commercial License** - for businesses that want to integrate Nyla Core into proprietary applications without GPL obligations. Contact us for commercial licensing terms and pricing.
+
+This dual licensing model allows:
+- **Open source projects**: Free use under GPL v3
+- **Commercial projects**: Proprietary use with commercial license
+- **SaaS providers**: Flexibility to choose appropriate license
 
 ## Contributing
 
-To contribute to the specifications:
+To contribute to Nyla Analytics Core:
 
-1. Review existing specifications
-2. Discuss changes in GitHub issues
-3. Submit pull requests with clear descriptions
-4. Update implementation status and tests
-5. Follow conventional commit guidelines 
+### 📋 Before Contributing
+1. Review the [Contributor License Agreement (CLA)](CLA.md)
+2. Sign the CLA in your first pull request
+3. Review existing specifications and code
+
+### 🔄 Contribution Process
+1. Discuss significant changes in GitHub issues first
+2. Fork the repository and create a feature branch
+3. Make your changes with clear, tested code
+4. Submit a pull request with detailed description
+5. Include CLA acceptance in your PR
+6. Respond to code review feedback
+
+### 📚 Types of Contributions
+- **Code**: Core analytics features, bug fixes, performance improvements
+- **Documentation**: Specification updates, guides, examples
+- **Testing**: Unit tests, integration tests, performance benchmarks
+- **Security**: Security fixes, vulnerability reports
+
+### ⚖️ Licensing Note
+All contributions are subject to the project's dual licensing model. By contributing, you grant rights for both GPL v3 and commercial licensing as outlined in the [CLA](CLA.md). 
