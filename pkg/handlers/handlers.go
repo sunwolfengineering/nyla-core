@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/chasefleming/elem-go/attrs"
 	"github.com/mileusna/useragent"
 
+	"github.com/sunwolfengineering/nyla-core/pkg/constants"
 	"github.com/sunwolfengineering/nyla-core/pkg/db"
 	"github.com/sunwolfengineering/nyla-core/pkg/geo"
 	"github.com/sunwolfengineering/nyla-core/pkg/hash"
@@ -24,8 +26,7 @@ type CollectorData struct {
 }
 
 type CollectorPayload struct {
-	SiteID string        `json:"site_id"`
-	Data   CollectorData `json:"data"`
+	Data CollectorData `json:"data"`
 }
 
 type Handlers struct {
@@ -39,13 +40,28 @@ func (h *Handlers) GetCollectV1(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
 	referrer := r.URL.Query().Get("referrer")
 
-	if siteID == "" || eventType == "" {
-		http.Error(w, "Missing required parameters", http.StatusBadRequest)
+	// Enforce single-site architecture
+	if siteID != "" && siteID != constants.DefaultSiteID {
+		response := map[string]string{
+			"error": "Invalid site_id. This instance only supports site_id='default'",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	if eventType == "" {
+		response := map[string]string{
+			"error": "Missing required parameter: type",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	payload := CollectorPayload{
-		SiteID: siteID,
 		Data: CollectorData{
 			Type:      eventType,
 			Event:     url,
@@ -57,7 +73,7 @@ func (h *Handlers) GetCollectV1(w http.ResponseWriter, r *http.Request) {
 
 	ua := useragent.Parse(r.UserAgent())
 	ip, _ := geo.IPFromRequest([]string{"X-Forwarded-For", "X-Real-IP"}, r)
-	hashVal, _ := hash.GeneratePrivateIDHash(ip.String(), r.UserAgent(), r.Host, siteID)
+	hashVal, _ := hash.GeneratePrivateIDHash(ip.String(), r.UserAgent(), r.Host, constants.DefaultSiteID)
 
 	if err := h.Events.Add(payload, hashVal, ua, nil); err != nil {
 		log.Println("error adding event:", err)
@@ -82,7 +98,8 @@ func (h *Handlers) GetCollectV1(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetStatsRealtimeV1(w http.ResponseWriter, r *http.Request) {
 	db := h.Events.DB
 	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM events WHERE type = 'pageview'").Scan(&count)
+	// Enforce single-site architecture in the query
+	err := db.QueryRow("SELECT COUNT(*) FROM events WHERE type = 'pageview' AND site_id = ?", constants.DefaultSiteID).Scan(&count)
 	if err != nil && err != sql.ErrNoRows {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "<div class='error'>Error: %v</div>", err)

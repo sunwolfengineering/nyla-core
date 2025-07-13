@@ -81,7 +81,7 @@ function sendPageview(event: PageviewEvent) {
   }
 
   const params = new URLSearchParams({
-    site_id: config.site,
+    site_id: 'default', // Enforced to default for single-site architecture
     type: 'pageview',
     url: event.url,
     title: event.title,

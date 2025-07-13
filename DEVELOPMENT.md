@@ -62,8 +62,9 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 #### Optional Configuration
 - `GEOIP_API_KEY`: API key for geo IP service (if using external provider)
 - `GEOIP_PROVIDER`: Geo IP provider name
-- `NYLA_SITE_ID`: Default site ID for development
 - `NYLA_SAMPLING_RATE`: Event sampling rate (1.0 = 100%)
+
+**Note**: `NYLA_SITE_ID` is no longer needed as the open-core version enforces single-site architecture with `site_id="default"`.
 
 ### Updating Environment Variables
 
