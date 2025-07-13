@@ -1,8 +1,10 @@
-# Nyla Analytics - JavaScript Tracker Specification
+# Nyla Analytics - JavaScript Tracker Specification (Core)
 
 ## Overview
 
-The Nyla JavaScript tracker is a lightweight, privacy-focused analytics script that collects essential web analytics data. It's designed to be minimal, fast, and respectful of user privacy.
+The Nyla JavaScript tracker is a lightweight, privacy-focused analytics script that collects essential web analytics data for single-site deployments. It's designed to be minimal, fast, and respectful of user privacy.
+
+
 
 ## Key Features
 
@@ -20,12 +22,16 @@ The Nyla JavaScript tracker is a lightweight, privacy-focused analytics script t
 ### Script Tag
 
 ```html
-<script async src="https://cdn.getnyla.app/collect.js"></script>
+<!-- Core self-hosted installation -->
+<script async src="https://example.com/collect.js"></script>
 <script>
   window.nyla = window.nyla || function(...args) {
     (window.nyla.q = window.nyla.q || []).push(args);
   };
-  nyla('init', { site: 'abc123' });
+  nyla('init', { 
+    site: 'default',  // Always 'default' in core
+    endpoint: 'https://example.com/v1/collect'
+  });
 </script>
 ```
 
@@ -38,15 +44,18 @@ npm install @nyla/collect
 ```typescript
 import { init } from '@nyla/collect';
 
-init({ site: 'abc123' });
+init({ 
+  site: 'default',
+  endpoint: 'https://example.com/v1/collect'
+});
 ```
 
 ## Configuration
 
 ```typescript
 interface NylaConfig {
-  site?: string;          // Site identifier
-  endpoint?: string;      // Custom collection endpoint
+  site?: string;          // Site identifier (always 'default' in core)
+  endpoint?: string;      // Collection endpoint (required for self-hosted)
   debug?: boolean;        // Enable debug logging
   privacy?: {
     respectDNT?: boolean; // Honor Do Not Track
@@ -55,12 +64,13 @@ interface NylaConfig {
   };
   sampling?: {
     rate?: number;        // Sample rate (0-1)
-    rules?: SamplingRule[];
   };
   meta?: {
     [key: string]: any;   // Custom metadata
   };
 }
+
+
 ```
 
 ## API Reference

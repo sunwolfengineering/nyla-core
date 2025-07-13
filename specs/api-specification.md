@@ -1,8 +1,8 @@
-# Nyla Analytics - API Specification
+# Nyla Analytics - API Specification (Core)
 
 ## Overview
 
-The Nyla Analytics API is a hypermedia-driven service that handles both event collection and HTML-based user interfaces. It's designed for simplicity, performance, and privacy.
+The Nyla Analytics Core API is a hypermedia-driven service that handles event collection and HTML-based user interfaces for single-site analytics. It's designed for simplicity, performance, and privacy in self-hosted environments.
 
 ## API Endpoints
 
@@ -13,7 +13,7 @@ The Nyla Analytics API is a hypermedia-driven service that handles both event co
 Collects a single event (typically a pageview or simple custom event) via HTTP GET. This is designed for maximum compatibility (e.g., email open tracking, image beacons, JS tracker fallback).
 
 **Query Parameters:**
-- `site_id` (string, required): Site identifier
+- `site_id` (string, required): Site identifier (fixed to "default" in core)
 - `type` (string, required): Event type (e.g., `pageview`, `event`)
 - `url` (string, optional): Page URL
 - `title` (string, optional): Page title
@@ -156,52 +156,39 @@ Response:
 </table>
 ```
 
-### Site Management
+### Site Settings (Core)
 
-#### GET /sites
+#### GET /settings
 
-List configured sites with management controls.
+Display single-site settings interface (core supports one site only).
 
 Response:
 ```html
-<div class="sites-list">
-    <div class="site-card" hx-target="closest div" hx-swap="outerHTML">
-        <h3>Nyla App</h3>
-        <p>Domain: app.getnyla.app</p>
-        <button hx-get="/sites/default/edit"
-                class="edit-btn">Edit</button>
-        <button hx-delete="/sites/default"
-                hx-confirm="Are you sure?"
-                class="delete-btn">Delete</button>
+<div class="settings-container">
+    <div class="site-settings">
+        <h3>Site Configuration</h3>
+        <form hx-put="/settings" hx-swap="innerHTML" hx-target="#status">
+            <label>
+                <span>Site Name:</span>
+                <input type="text" name="name" value="My Site" required>
+            </label>
+            <fieldset>
+                <legend>Privacy Settings</legend>
+                <label>
+                    <input type="checkbox" name="ip_anonymization" checked>
+                    IP Anonymization
+                </label>
+                <label>
+                    <input type="number" name="retention_days" value="90">
+                    Data Retention (days)
+                </label>
+            </fieldset>
+            <button type="submit">Save Settings</button>
+        </form>
+
     </div>
-    <button hx-get="/sites/new"
-            hx-target="#modal"
-            class="new-site-btn">Add Site</button>
+    <div id="status"></div>
 </div>
-```
-
-#### POST /sites
-
-Create a new site. Accepts form data.
-
-Request:
-```html
-<form hx-post="/sites" hx-swap="beforeend" hx-target="#sites-list">
-    <input type="text" name="name" required>
-    <input type="text" name="domain" required>
-    <fieldset>
-        <legend>Privacy Settings</legend>
-        <label>
-            <input type="checkbox" name="ip_anonymization" checked>
-            IP Anonymization
-        </label>
-        <label>
-            <input type="number" name="retention_days" value="90">
-            Data Retention (days)
-        </label>
-    </fieldset>
-    <button type="submit">Create Site</button>
-</form>
 ```
 
 ## Real-time Updates

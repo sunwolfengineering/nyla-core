@@ -1,26 +1,36 @@
-# Nyla Analytics - Architecture Overview
+# Nyla Analytics Core - Architecture Overview
 
 ## System Overview
 
-Nyla is a privacy-focused, self-hosted web analytics platform designed for simplicity and performance. The system consists of four main components:
+Nyla Analytics Core is the open-source foundation of a privacy-focused web analytics platform. The Core provides essential analytics capabilities for self-hosted deployments and serves as the foundation for the commercial SaaS offering.
 
-1. Collection API - Core event ingestion service
-2. JavaScript Tracker - Lightweight client-side collector
-3. Analytics Dashboard - Server-rendered hypermedia interface
-4. Storage Layer - Event data persistence
+## Core Architecture
+
+Nyla Analytics Core provides essential analytics capabilities:
+
+### Core Components
+1. **Event Collection Engine** - High-performance event ingestion and processing
+2. **JavaScript Tracker** - Lightweight, privacy-focused client library (<5KB)
+3. **Analytics Dashboard** - Clean, single-site interface for essential metrics
+4. **Storage Layer** - SQLite-based data persistence with privacy controls
 
 ## System Architecture Diagrams
 
-### Component Interaction
+### Core Architecture
 ```mermaid
 graph TD
     Client[Client Website] -->|Events| Tracker[JS Tracker]
-    Tracker -->|HTTP POST| API[Collection API]
-    API -->|Write| DB[(SQLite)]
-    API -->|SSE| Dashboard[Analytics Dashboard]
-    Dashboard -->|Query| DB
-    Dashboard -->|HTML| Browser[Browser]
-    Browser -->|HTMX| Dashboard
+    Tracker -->|HTTP POST| CoreAPI[Core Collection API]
+    CoreAPI -->|Write| CoreDB[(Core SQLite)]
+    CoreAPI -->|Updates| CoreDash[Core Dashboard]
+    CoreDash -->|Query| CoreDB
+    CoreDash -->|HTML| Browser[Browser]
+    
+    subgraph "Nyla Core"
+        CoreAPI
+        CoreDB
+        CoreDash
+    end
 ```
 
 ### Data Flow
@@ -41,190 +51,181 @@ sequenceDiagram
 ```
 
 ### Deployment Architecture
+
+#### Core Self-Hosted Deployment
 ```mermaid
 graph TD
-    subgraph Container[Single Container]
-        API[Go Binary] -->|embed| Static[Static Assets]
-        API -->|embed| Templates[HTML Templates]
-        API -->|file| DB[(SQLite)]
+    subgraph CoreContainer[Core Container]
+        CoreBinary[Core Go Binary] -->|embed| CoreAssets[Core Assets]
+        CoreBinary -->|embed| CoreTemplates[Core Templates]
+        CoreBinary -->|file| CoreSQLite[(SQLite)]
     end
-    Client -->|HTTP/SSE| Container
+    Client -->|HTTP| CoreContainer
 ```
+
+
 
 ## Key Technical Decisions
 
-### Backend Stack
+### Core Backend Stack
 
-- **Language/Framework**: Go
-  - Rationale: Excellent performance, small binary size, great concurrency support
-  - Simple deployment with single static binary
-  - Strong standard library reducing external dependencies
-  - Built-in templating for HTML generation
-  - Built-in testing framework
+- **Language**: Go 1.24+
+  - Rationale: Single binary deployment, excellent performance, strong concurrency
+  - Minimal external dependencies for Core functionality
+  - Clear package boundaries for open-core architecture
+  - Built-in testing and benchmarking tools
+  - Cross-platform compilation support
 
 - **Database**: SQLite
-  - Rationale: Zero-config, single file database perfect for self-hosting
-  - Excellent performance for read-heavy analytics workloads
+  - SQLite for zero-config self-hosting
   - Built-in WAL mode for concurrent access
-  - Simple backup process
-  - Can be upgraded to PostgreSQL in future if needed
+  - Simple backup and migration processes
 
-- **API Design**: Hypermedia-Driven with Server-Sent Events (SSE)
-  - HTML-over-the-wire using HTMX
-  - SSE for real-time dashboard updates
-  - Progressive enhancement
-  - Minimal JavaScript footprint
-  - Excellent browser support
+- **API Design**: RESTful with Extension Points
+  - Clean Core API boundaries
+  - Feature gating for commercial functionality
+  - Stable public interfaces for extensions
+  - Basic real-time updates in Core
+  - Enhanced SSE capabilities in Commercial
 
-### Frontend Stack
+### Core Frontend Stack
 
-- **Framework**: HTMX + Hyperscript
-  - Rationale: Hypermedia-driven architecture
-  - Tiny footprint (<14KB gzipped for HTMX)
-  - No build step required
-  - Server-side rendering
-  - Progressive enhancement
-  - Real-time updates via SSE
+- **Core Interface**: Server-rendered HTML
+  - Minimal JavaScript requirements
+  - Essential analytics display only
+  - Single-site dashboard
+  - Basic real-time updates
+  - Mobile-responsive design
+  - Accessibility focused
 
-- **State Management**:
-  - Server-side state in SQLite
-  - Client-side state via HTMX triggers
-  - Local storage for preferences
-  - SSE for real-time updates
-  - No complex client state management needed
+- **Core Build System**:
+  - Single Go binary with embedded assets
+  - No external build dependencies
+  - Standard Go toolchain only
+  - Cross-platform compilation
+  - Minimal resource usage
 
-- **Build Tooling**:
-  - esbuild for JS minification
-    - Fast builds
-    - Modern output
-    - Tree shaking
-  - PostCSS for Tailwind
-    - CSS purging
-    - Minimal production CSS
-  - go:embed for static assets
-    - Single binary deployment
-    - No external asset server needed
-
-- **Component Library**:
-  - TailwindUI components
-    - Consistent design language
-    - Accessible by default
-    - Mobile-first responsive
-  - Custom HTMX components
-    - Reusable interaction patterns
-    - Progressive enhancement
-    - Minimal JavaScript
-
-- **Templates**: Go html/template
+- **Core Templates**: Go html/template
   - Built into Go standard library
-  - Secure by default
-  - Composable layouts and partials
-  - Simple to maintain and test
+  - Security-focused by default
+  - Simple dashboard layouts
+  - Essential metric displays
+  - Basic responsive design
 
-- **Styling**: TailwindCSS
-  - Utility-first approach for rapid development
-  - Small production bundles
-  - Good component library ecosystem
-  - Easy theming support
+### Core Infrastructure
 
-### Infrastructure
+- **Core Deployment**: Single Binary + SQLite
+  - Self-contained Go binary
+  - Embedded HTML templates and assets
+  - SQLite as only external dependency
+  - File-based configuration
+  - Simple container deployment
 
-- **Deployment**: Single Binary + SQLite
-  - Everything packaged in one Go binary
-  - HTML templates embedded in binary
-  - SQLite database file as only external dependency
-  - Simple backup requirements
+- **Extension Architecture**: Plugin Interfaces
+  - Clean API boundaries for commercial features
+  - Stable extension points
+  - Feature flag system
+  - Backward compatibility guarantees
 
-- **Configuration**: Environment Variables + Config File
-  - Basic settings via environment variables
-  - Advanced options in optional YAML config
-  - Sensible defaults for everything
+### Core Development Workflow
 
-### Development Workflow
+- **Open Source Development**: 
+  - Public GitHub repository
+  - Community contributions welcome
+  - Transparent roadmap and issue tracking
+  - Core-focused feature development
 
-- **Version Control**: Git + GitHub
-  - Trunk-based development
-  - Pull request workflow
-  - Automated testing on PRs
+- **Core CI/CD**: GitHub Actions
+  - Core functionality testing
+  - Cross-platform binary builds
+  - Container image publishing
+  - Automated security scanning
 
-- **CI/CD**: GitHub Actions
-  - Automated testing
-  - Binary builds for all platforms
-  - Container image builds
-  - Automated releases
+- **Core Code Quality**:
+  - Go tests for core functionality
+  - API compatibility testing
+  - Security-focused code review
+  - Performance benchmarking
 
-- **Code Quality**:
-  - Go tests with testify
-  - HTML validation
-  - ESLint + Prettier for HTMX/Hyperscript
-  - golangci-lint
+## Core System Components
 
-## System Components
+### Core Collection Engine
 
-### Collection API
+- High-performance event ingestion
+- Privacy-first data processing
+- Basic rate limiting and validation
+- Single-site data isolation
+- IP anonymization by default
+- Essential event types (pageviews, custom events)
+- Extension points for commercial features
 
-- RESTful endpoints for event ingestion
-- Basic request validation and sanitization
-- IP anonymization and privacy controls
-- Simple rate limiting
-- Efficient batch processing
-- Real-time event broadcasting
+### Core JavaScript Tracker
 
-### JavaScript Tracker
+- Ultra-lightweight (<5KB gzipped)
+- Zero external dependencies
+- Essential tracking functionality
+- Privacy controls built-in
+- DoNotTrack compliance
+- Single-site configuration
+- Self-hosted deployment support
 
-- Tiny (<5KB gzipped) browser script
-- No external dependencies
-- Automatic pageview tracking
-- Custom event support
-- Respect DoNotTrack
-- Privacy-focused by default
-- Configurable data collection
+### Core Analytics Dashboard
 
-### Analytics Dashboard
+- Minimal, essential metrics display
+- Single-site analytics view
+- Basic real-time updates
+- Server-rendered HTML
+- Mobile-responsive design
+- Accessibility compliance
+- Simple, clean interface
 
-- Server-rendered HTML interface
-- Real-time updates via SSE
-- Minimal client-side JavaScript
-- Progressive enhancement
-- Mobile-first responsive design
-- Dark/light themes
-- Accessible by default
+### Core Storage Layer
 
-### Storage Layer
+- SQLite-based data persistence
+- Single-site data model
+- Basic retention policies
+- Simple backup procedures
+- Essential indexes for performance
+- Privacy-compliant data handling
 
-- Efficient SQLite schema
-- Automatic data retention
-- Simple backup process
-- Basic data export
-- Privacy compliance helpers
+## Core Features
 
-## Hypermedia Features
+### Essential Analytics
+- Real-time visitor count
+- Page view tracking
+- Basic session analytics
+- Top pages/referrers
+- Time-based metrics (hourly/daily)
+- Simple data export (JSON/CSV)
 
-- HTML-over-the-wire updates
-- Out-of-band updates via SSE
-- Optimistic UI updates
-- Form validation
-- Infinite scroll
-- Modal dialogs
-- Toast notifications
-- Loading indicators
-
-## Security & Privacy
-
-- Privacy-first design
+### Privacy & Security
+- Privacy-first by design
 - IP anonymization by default
 - Configurable data retention
 - No cross-site tracking
 - No cookies required
-- GDPR/CCPA friendly defaults
-- CSP compatible
+- GDPR/CCPA compliance
+- Content Security Policy compatible
+- Basic API key authentication
 
-## Future Considerations
+## Extension Capabilities
 
-- PostgreSQL upgrade path
-- Multi-site support
-- Custom dashboards
-- Advanced event filtering
-- API authentication
-- Team management
-- Export/import tools 
+The Nyla Core architecture provides flexible extension points:
+
+### Plugin Architecture
+- Clean API boundaries for extensibility
+- Stable interfaces for custom integrations
+- Feature flag system for optional functionality
+- Backward compatibility guarantees
+
+### Data Processing Extensions
+- Custom event processors
+- Additional aggregation methods
+- Enhanced filtering capabilities
+- Custom export formats
+
+### Interface Extensions
+- Custom dashboard components
+- Additional visualization types
+- Enhanced reporting tools
+- Third-party integrations 

@@ -1,8 +1,17 @@
-# Nyla Analytics Technical Specifications
+# Nyla Analytics Core - Technical Specifications
 
 ## Overview
 
-Nyla Analytics is a privacy-focused, self-hosted web analytics platform designed for simplicity and performance. These specifications outline the technical architecture, implementation details, and operational considerations for the platform.
+Nyla Analytics Core is the open-source foundation of a privacy-focused web analytics platform. These specifications define the core analytics engine, event collection system, and minimal self-hosted UI that forms the basis for both self-hosted deployments and the commercial SaaS offering.
+
+## Open-Core Architecture
+
+Nyla Core is a complete, self-hosted web analytics platform:
+
+- **Event Collection**: Real-time analytics tracking
+- **Analytics Engine**: Core metrics and insights
+- **Dashboard Interface**: Simple, focused analytics view
+- **Self-Hosted Deployment**: Single-binary installation
 
 ## Core Specifications
 
@@ -17,12 +26,10 @@ Nyla Analytics is a privacy-focused, self-hosted web analytics platform designed
 - Data flow patterns
 
 ### [API Specification](specs/api-specification.md)
-- Hypermedia-driven interface design
 - Event collection endpoints
-- Real-time analytics interface
-- Server-sent events integration
-- Error handling and rate limiting
-- Authentication and authorization
+- Analytics data retrieval
+- Authentication and access control
+- Rate limiting and privacy controls
 - Progressive enhancement strategy
 
 ### [JavaScript Tracker](specs/js-tracker-specification.md)
@@ -35,41 +42,37 @@ Nyla Analytics is a privacy-focused, self-hosted web analytics platform designed
 - Integration guides
 
 ### [Database Schema](specs/database-schema.md)
-- SQLite table structure and indexes
-- Data models and relationships
-- Privacy and retention policies
-- Query optimization
-- Maintenance procedures
-- Backup configuration
+- SQLite schema for analytics data
+- Event storage and session tracking
+- Privacy controls and data retention
+- Aggregation tables and performance optimization
+- Backup and maintenance procedures
 
 ### [Deployment](specs/deployment.md)
-- Container configuration
-- Environment setup
-- Resource requirements
-- Monitoring and logging
+- Self-hosted container deployment
+- Single-binary architecture
+- Environment configuration
+- Resource requirements and sizing
+- Monitoring and logging setup
 - Backup procedures
-- Maintenance tasks
-- Security hardening
+- Security considerations
 
 ### [Development Guide](specs/development.md)
-- Environment setup
-- Required tools and versions
+- Development environment setup
+- Project structure and organization
 - Local development workflow
 - Git workflow and conventions
-- Testing strategy
-- CI/CD pipeline
+- Testing strategy and patterns
+- Build pipeline and tooling
 - Debugging guidelines
-- Code organization
+- Contribution guidelines
 
 ## Domain Configuration
 
-The [Domain Conventions](.cursor/rules/domain-conventions.mdc) rule defines the domain structure for all Nyla services:
-
-- `getnyla.app` - Root domain
-- `app.getnyla.app` - Main application interface
-- `dashboard.getnyla.app` - Analytics dashboard
-- `api.getnyla.app` - API endpoints
-- `cdn.getnyla.app` - Content delivery network
+For self-hosted deployments, Core supports:
+- Custom domain configuration
+- Local analytics interface
+- API endpoint customization
 
 ## Key Design Principles
 
@@ -84,90 +87,113 @@ The [Domain Conventions](.cursor/rules/domain-conventions.mdc) rule defines the 
 2. **Simplicity**
    - Single binary deployment
    - SQLite for storage
-   - Hypermedia-driven interface
-   - Minimal JavaScript
-   - Progressive enhancement
+   - Minimal core interface
+   - Essential analytics only
+   - Zero-config installation
 
 3. **Performance**
-   - Efficient data storage
-   - Real-time capabilities via SSE
-   - Optimized queries
-   - Small client footprint (<5KB)
-   - Caching strategies
-
-4. **Self-Hosted**
-   - Easy installation
-   - Simple backup process
-   - Minimal dependencies
-   - Clear upgrade path
+   - Efficient event collection
+   - Basic real-time updates
+   - Optimized core queries
+   - Small tracker footprint (<5KB)
    - Resource efficient
+
+4. **Self-Hosted First**
+   - One-command deployment
+   - File-based configuration
+   - Single dependency (SQLite)
+   - Simple upgrade process
+   - Minimal resource usage
+
+5. **Community-Focused**
+   - Stable public APIs
+   - Extensible architecture
+   - Clear separation of concerns
+   - Open development process
+   - Dual licensing (GPL v3 + Commercial)
 
 ## Technical Stack
 
 1. **Backend**
-   - Go for server implementation
+   - Go 1.24+ for analytics engine
    - SQLite for data storage
-   - HTML-over-the-wire with HTMX
-   - Server-sent events for real-time
+   - REST API for event collection
+   - HTML interface
 
 2. **Frontend**
-   - HTMX + Hyperscript
-   - TailwindUI components
-   - Server-side state management
-   - Progressive enhancement
-   - Dark/light themes
+   - Minimal JavaScript (<5KB tracker)
+   - Server-rendered HTML
+   - Real-time updates
+   - Analytics dashboard
 
-3. **Build Tools**
-   - esbuild for JS
-   - PostCSS for Tailwind
-   - go:embed for assets
-   - GitHub Actions for CI/CD
+3. **Build & Deployment**
+   - Single Go binary
+   - Embedded static assets
+   - Container-first deployment
+   - Zero external dependencies
 
 ## Implementation Status
 
-The specifications are currently in development, with the following status:
+Components under development:
 
-- ✅ Core architecture decisions
-- ✅ API design patterns
+- ✅ Architecture design
+- ✅ API patterns
 - ✅ Database schema
 - ✅ Deployment strategy
 - ✅ Development workflow
-- ✅ Technical stack decisions
-- 🚧 HTML templates and components
-- 🚧 Integration examples
+- 🚧 Analytics engine
+- 🚧 Dashboard interface
+- 🚧 JavaScript tracker
 - 📝 Documentation
 
-## Future Considerations
+## Core Features
 
-Areas planned for future specification:
+- Event collection and storage
+- Pageview and session analytics
+- Real-time dashboard
+- Self-hosted deployment
+- API key authentication
+- Data export (JSON/CSV)
+- Privacy controls and GDPR compliance
+- Single-binary installation
 
-1. **Multi-Site Support**
-   - Site isolation
-   - Resource quotas
-   - Cross-site analytics
+## Licensing
 
-2. **Team Management**
-   - Role-based access
-   - Audit logging
-   - Team permissions
+Nyla Analytics Core is dual-licensed under:
 
-3. **Advanced Analytics**
-   - Custom dashboards
-   - Data export
-   - Advanced filtering
-   - Custom metrics
+### Open Source License
+**GNU General Public License v3 (GPL v3)** - for open source projects and community use. This copyleft license ensures that modifications remain open source, promoting transparency and community contributions.
 
-4. **Integration Ecosystem**
-   - CMS plugins
-   - Framework integrations
-   - Export/import tools
+### Commercial License
+**Commercial License** - for businesses that want to integrate Nyla Core into proprietary applications without GPL obligations. Contact us for commercial licensing terms and pricing.
+
+This dual licensing model allows:
+- **Open source projects**: Free use under GPL v3
+- **Commercial projects**: Proprietary use with commercial license
+- **SaaS providers**: Flexibility to choose appropriate license
 
 ## Contributing
 
-To contribute to these specifications:
+To contribute to Nyla Analytics Core:
 
-1. Review the existing specifications
-2. Discuss major changes in issues first
-3. Submit pull requests with specification updates
-4. Ensure cross-reference consistency
-5. Update implementation status 
+### 📋 Before Contributing
+1. Review the [Contributor License Agreement (CLA)](CLA.md)
+2. Sign the CLA in your first pull request
+3. Review existing specifications and code
+
+### 🔄 Contribution Process
+1. Discuss significant changes in GitHub issues first
+2. Fork the repository and create a feature branch
+3. Make your changes with clear, tested code
+4. Submit a pull request with detailed description
+5. Include CLA acceptance in your PR
+6. Respond to code review feedback
+
+### 📚 Types of Contributions
+- **Code**: Core analytics features, bug fixes, performance improvements
+- **Documentation**: Specification updates, guides, examples
+- **Testing**: Unit tests, integration tests, performance benchmarks
+- **Security**: Security fixes, vulnerability reports
+
+### ⚖️ Licensing Note
+All contributions are subject to the project's dual licensing model. By contributing, you grant rights for both GPL v3 and commercial licensing as outlined in the [CLA](CLA.md). 

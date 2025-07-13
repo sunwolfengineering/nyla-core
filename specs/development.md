@@ -1,6 +1,17 @@
-# Development Guide
+# Development Guide (Open Core)
 
 ## Environment Setup
+
+### Open Core Development Workflow
+
+Nyla Analytics provides a single-site analytics solution focused on privacy and self-hosting.
+
+### Core Development Focus
+- Single-site functionality
+- Essential analytics features
+- Privacy-first approach
+- Self-hosted deployment
+- Community contributions
 
 ### Required Tools
 - Go 1.24 or later
@@ -38,9 +49,10 @@
 ### Test Data
 Development environment includes sample data for:
 - Page views
-- Custom events
-- Multiple sites
+- Custom events  
+- Single site configuration
 - Various time periods
+- Privacy compliance testing
 
 ## Git Workflow
 
@@ -99,21 +111,24 @@ CI/CD implementation is planned for a future ticket. The pipeline will include:
 - Mocked external dependencies
 - Coverage requirements enforced in CI
 
+
 ### Integration Testing
-- API endpoint testing
-- Database operations
+- API endpoint testing (core endpoints only)
+- Database operations (single-site schema)
 - Event processing pipeline
 - Real-time update system
+- Privacy compliance
 
 ### End-to-End Testing
-- Core user journeys
+- Core user journeys (single-site)
 - Dashboard functionality
 - Data collection flow
-- Export/import operations
+- Settings management
+- Privacy features
 
 ### Performance Testing
 - Request latency benchmarks
-- Database query optimization
+- Database query optimization (SQLite)
 - Memory usage monitoring
 - Load testing critical paths
 
@@ -159,12 +174,26 @@ make clean
 ## Code Organization
 
 ```
-nyla/
-├── api/           # API handlers and middleware
+nyla-core/
 ├── cmd/           # Command line tools
-├── internal/      # Internal packages
-├── migrations/    # Database migrations
-├── static/        # Static assets
-├── templates/     # HTML templates
-└── web/           # Web interface handlers
-``` 
+├── pkg/           # Core packages (open source)
+│   ├── db/        # Database operations
+│   ├── handlers/  # HTTP handlers
+│   ├── geo/       # Geographic utilities
+│   └── hash/      # Hashing utilities
+├── migrations/    # Database migrations (core schema)
+├── data/          # SQLite database
+├── js-collector/  # JavaScript tracker
+└── specs/         # Documentation
+```
+
+## Feature Development Guidelines
+
+### Core Feature Development
+- Focus on single-site use cases
+- Maintain privacy-first approach
+- Ensure self-hosted compatibility
+- Keep dependencies minimal
+- Follow open source best practices
+
+ 

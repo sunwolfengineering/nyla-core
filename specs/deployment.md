@@ -1,8 +1,11 @@
-# Nyla Analytics - Deployment Specification
+# Nyla Analytics - Deployment Specification (Core)
 
 ## Overview
 
-Nyla Analytics is designed for simple self-hosting with minimal operational overhead. The entire application is packaged as a single container with SQLite for data storage.
+Nyla Analytics Core is designed for simple self-hosting with minimal operational overhead. The entire application is packaged as a single container with SQLite for data storage, optimized for single-site analytics.
+
+**Deployment:**
+Self-hosted single binary with SQLite database, packaged as a Docker container for simple deployment.
 
 ## Container Design
 
@@ -38,24 +41,30 @@ ENTRYPOINT ["/usr/local/bin/nyla"]
 ### Environment Variables
 
 ```bash
-# Server
+# Server (Core)
 NYLA_HOST=0.0.0.0
 NYLA_PORT=3000
 NYLA_ENV=production
+NYLA_EDITION=core  # Set to 'core' for self-hosted
 
-# Database
+# Database (SQLite only in core)
 NYLA_DB_PATH=/data/nyla.db
 NYLA_DB_BACKUP_PATH=/backup
 
 # Security
 NYLA_API_KEY=nyla_key_xxx
 NYLA_ENCRYPTION_KEY=xxx
-NYLA_ALLOWED_ORIGINS=https://app.getnyla.app
+NYLA_ALLOWED_ORIGINS=https://yourdomain.com
 
-# Privacy
+# Privacy (Core defaults)
 NYLA_IP_ANONYMIZATION=true
 NYLA_RETENTION_DAYS=90
 NYLA_RESPECT_DNT=true
+NYLA_SITE_NAME="My Site"
+
+# Feature Flags (Core)
+NYLA_ENABLE_MULTI_SITE=false  # Always false in core
+NYLA_ENABLE_TEAMS=false       # Always false in core
 
 # Logging
 NYLA_LOG_LEVEL=info
