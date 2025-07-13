@@ -5,6 +5,7 @@ bin/
 api
 ui
 unified
+nyla-core
 nyla-api
 nyla-ui
 
@@ -12,7 +13,7 @@ nyla-ui
 .envrc
 
 # sqlite
-nyla.db
+nyla.db*
 data/
 
 # Test coverage artifacts

@@ -7,7 +7,7 @@ This guide covers local development for the Nyla Core analytics engine. For comp
 ## Prerequisites
 - **Go** 1.24 or later
 - **SQLite** 3.39.0 or later
-- **Goose** (for migrations): https://github.com/pressly/goose
+- **Built-in migrations**: Zero dependency migration system
 - **Git** (for versioning)
 - **direnv** (for environment variable management): https://direnv.net/
 
@@ -18,7 +18,7 @@ Optional:
 
 ## Environment Setup: direnv
 
-This project uses [direnv](https://direnv.net/) to automatically load environment variables from the `.envrc` file. These variables are required for Goose migrations and other development tasks in the core analytics service.
+This project uses [direnv](https://direnv.net/) to automatically load environment variables from the `.envrc` file. These variables are used for development tasks in the core analytics service.
 
 ### Initial Setup
 
@@ -36,14 +36,12 @@ This project uses [direnv](https://direnv.net/) to automatically load environmen
 
 This will trust the `.envrc` file and ensure all required environment variables are set for your shell session.
 
-If you skip this step, you may see errors from Goose about missing drivers, database strings, or migration files.
+If you skip this step, you may see errors related to development tasks.
 
 ### Environment Variables Reference
 
-#### Required Variables (for Goose migrations)
-- `GOOSE_DRIVER`: Database driver (default: `sqlite3`)
-- `GOOSE_DBSTRING`: Database connection string (default: `./nyla.db`)
-- `GOOSE_MIGRATION_DIR`: Migration files directory (default: `./migrations`)
+#### Database Configuration
+The application uses built-in migrations that run automatically on startup. No external migration tools are required.
 
 #### Core Server Configuration
 - `PORT`: Core server port (default: `8080`)

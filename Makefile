@@ -6,18 +6,8 @@ SRC=$(shell find . -name '*.go') go.mod
 nyla-core:
 	go build $(BUILD_FLAGS) -o bin/nyla-core ./cmd/nyla-core
 
-migrate:
-	goose up
-
-migrate-reset:
-	goose reset
-
-migrate-status:
-	goose status
-
+# Database operations (built-in migration system)
 seed:
-	goose reset
-	goose up
+	rm -f nyla.db nyla.db-shm nyla.db-wal
 	go run migrations/seed/main.go
-	sqlite3 nyla.db ".mode tabs" ".import data/dump.data events"
 

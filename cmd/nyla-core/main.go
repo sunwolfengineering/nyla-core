@@ -7,22 +7,22 @@ import (
 	"net/http"
 
 	"github.com/sunwolfengineering/nyla-core/internal/server"
-	"github.com/sunwolfengineering/nyla-core/pkg/db"
+	"github.com/sunwolfengineering/nyla-core/internal/storage"
 )
 
 func main() {
 	var port = flag.String("port", "8080", "port to listen on")
 	flag.Parse()
 
-	// Initialize database
-	events := &db.Events{}
-	if err := events.Open(); err != nil {
-		log.Fatal("Failed to open database:", err)
+	// Initialize database with built-in migrations
+	db, err := storage.NewDB("nyla.db")
+	if err != nil {
+		log.Fatal("Failed to initialize database:", err)
 	}
-	defer events.Close()
+	defer db.Close()
 
 	// Create unified server
-	srv := server.New(events)
+	srv := server.New(db)
 
 	fmt.Printf("🚀 nyla-core server starting on port %s\n", *port)
 	fmt.Printf("📊 Dashboard: http://localhost:%s\n", *port)

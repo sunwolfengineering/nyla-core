@@ -5,21 +5,21 @@ import (
 	"os"
 
 	"github.com/sunwolfengineering/nyla-core/internal/middleware"
-	"github.com/sunwolfengineering/nyla-core/pkg/db"
+	"github.com/sunwolfengineering/nyla-core/internal/storage"
 	"github.com/sunwolfengineering/nyla-core/pkg/handlers"
 )
 
 // Server represents the unified HTTP server
 type Server struct {
-	events *db.Events
+	db *storage.DB
 	mux    *http.ServeMux
 	handler http.Handler
 }
 
 // New creates a new unified server instance
-func New(events *db.Events) *Server {
+func New(db *storage.DB) *Server {
 	s := &Server{
-		events: events,
+		db: db,
 		mux:    http.NewServeMux(),
 	}
 	
@@ -32,7 +32,7 @@ func New(events *db.Events) *Server {
 // setupRoutes configures all API and UI routes
 func (s *Server) setupRoutes() {
 	// Initialize handlers
-	apiHandlers := &handlers.Handlers{Events: s.events}
+	apiHandlers := &handlers.Handlers{DB: s.db}
 	
 	apiBaseURL := os.Getenv("API_BASE_URL")
 	if apiBaseURL == "" {
