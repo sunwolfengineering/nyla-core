@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/joepurdy/nyla/internal/server"
-	"github.com/joepurdy/nyla/pkg/db"
+	"github.com/sunwolfengineering/nyla-core/internal/server"
+	"github.com/sunwolfengineering/nyla-core/pkg/db"
 )
 
 func main() {

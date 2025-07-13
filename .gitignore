@@ -2,6 +2,11 @@ node_modules/
 
 # Build artifacts
 bin/
+api
+ui
+unified
+nyla-api
+nyla-ui
 
 # Environment configuration
 .envrc

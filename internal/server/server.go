@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joepurdy/nyla/internal/middleware"
-	"github.com/joepurdy/nyla/pkg/db"
-	"github.com/joepurdy/nyla/pkg/handlers"
+	"github.com/sunwolfengineering/nyla-core/internal/middleware"
+	"github.com/sunwolfengineering/nyla-core/pkg/db"
+	"github.com/sunwolfengineering/nyla-core/pkg/handlers"
 )
 
 // Server represents the unified HTTP server
