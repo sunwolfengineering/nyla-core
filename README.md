@@ -59,8 +59,8 @@ make migrate
 make seed
 
 # Build and run
-make nyla-api
-./bin/nyla-api
+make nyla-core
+./bin/nyla-core
 ```
 
 ### Requirements

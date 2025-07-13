@@ -1,4 +1,4 @@
-module github.com/joepurdy/nyla
+module github.com/sunwolfengineering/nyla-core
 
 go 1.24.2
 

@@ -1,11 +1,7 @@
 localhost {
-    # Reverse proxy to the UI
+    # Reverse proxy to the unified nyla-core server
+    # Handles both UI (/) and API (/api/v1/*) routes
     reverse_proxy localhost:8080
-}
-
-api.localhost {
-	# Reverse proxy all requests to API
-	reverse_proxy localhost:9876
 }
 
 example.localhost {

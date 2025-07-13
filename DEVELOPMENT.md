@@ -46,9 +46,8 @@ If you skip this step, you may see errors from Goose about missing drivers, data
 - `GOOSE_MIGRATION_DIR`: Migration files directory (default: `./migrations`)
 
 #### Core Server Configuration
-- `API_PORT`: Core API server port (default: `9876`)
-- `API_BASE_URL`: Base URL for core API server (default: `http://localhost:9876`)
-- `UI_PORT`: Core dashboard port (default: `8080`)
+- `PORT`: Core server port (default: `8080`)
+- `BASE_URL`: Base URL for core server (default: `http://localhost:8080`)
 
 #### CORS Configuration
 - `CORS_ALLOWED_ORIGINS`: Comma-separated list of allowed origins (default: `http://localhost:8080,https://localhost`)
@@ -124,13 +123,13 @@ direnv allow
 
 - **Build the core analytics binary:**
   ```bash
-  make nyla-api
+  make nyla-core
   ```
 - **Run the core server:**
   ```bash
-  ./bin/nyla-api
+  ./bin/nyla-core
   ```
-  This starts both the analytics API and basic dashboard interface.
+  This starts the unified analytics server with both API and dashboard interface.
 
 ---
 
@@ -170,9 +169,8 @@ direnv allow
   - Check Go version (`go version`).
   - Run `go mod tidy` to clean up dependencies.
 - **Port conflicts:**
-  - If the core server fails to start, ensure port 9876 (or your configured port) is free.
-  - Check the dashboard port 8080 is available.
-  - Modify ports in `.envrc` if needed and run `direnv reload`.
+  - If the core server fails to start, ensure port 8080 (or your configured port) is free.
+  - Modify the PORT in `.envrc` if needed and run `direnv reload`.
 - **CORS issues:**
   - Update `CORS_ALLOWED_ORIGINS` in `.envrc` to include your development URLs.
   - Ensure the core server is running for local development.

@@ -81,6 +81,13 @@ func (e *Events) Add(payload interface{}, hash string, ua useragent.UserAgent, g
 	return err
 }
 
+func (e *Events) Close() error {
+	if e.DB != nil {
+		return e.DB.Close()
+	}
+	return nil
+}
+
 func nowToInt() uint32 {
 	now := time.Now().Format("20060102")
 	i, err := strconv.ParseInt(now, 10, 32)

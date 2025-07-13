@@ -10,9 +10,9 @@ import (
 	"github.com/chasefleming/elem-go/attrs"
 	"github.com/mileusna/useragent"
 
-	"github.com/joepurdy/nyla/pkg/db"
-	"github.com/joepurdy/nyla/pkg/geo"
-	"github.com/joepurdy/nyla/pkg/hash"
+	"github.com/sunwolfengineering/nyla-core/pkg/db"
+	"github.com/sunwolfengineering/nyla-core/pkg/geo"
+	"github.com/sunwolfengineering/nyla-core/pkg/hash"
 )
 
 type CollectorData struct {
